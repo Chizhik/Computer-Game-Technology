@@ -1,0 +1,29 @@
+Initialize engine version: 5.4.1f1 (649f48bbbf0f)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.0]
+    Renderer: Intel(R) HD Graphics Family (ID=0xa16)
+    Vendor:   Intel
+    VRAM:     2096 MB
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\Programming\Unity\New Unity Project\ball_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading D:\Programming\Unity\New Unity Project\ball_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+- Completed reload, in  0.058 seconds
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\Programming\Unity\New Unity Project\ball_Data\Managed\System.dll (this message is harmless)
+desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
+<RI> Initializing input.
+XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.273568 ms
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: 2470 -> priority: 1 
