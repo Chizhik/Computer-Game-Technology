@@ -6,6 +6,7 @@ public class AIController : MonoBehaviour {
     public float speed;
     public GameObject target; //pursue
     public GameObject enemy; //flee
+    public GameObject obstacles;
 
     private Rigidbody myrb;
     private Rigidbody tgRigid;
@@ -14,6 +15,7 @@ public class AIController : MonoBehaviour {
     private Vector3 southWall;
     private Vector3 westWall;
     private Vector3 eastWall;
+    private Vector3 BigCube;
 
 	// Use this for initialization
 	void Start () {
@@ -35,6 +37,30 @@ public class AIController : MonoBehaviour {
         Vector3 seekVel = pursuit(tgRigid.position, tgRigid.velocity, myrb.position);
         Vector3 fleeVel = evade(enRigid.position, enRigid.velocity, myrb.position);
 
+        Vector3 potDir = newPotential(myrb.position);
+
+        Vector3 desiredVel = (seekVel + fleeVel + potDir).normalized * speed;
+        Vector3 steering = desiredVel - v;
+        myrb.AddForce(myrb.mass * steering / Time.fixedDeltaTime);
+	}
+
+    private Vector3 newPotential(Vector3 pos)
+    {
+        Vector3 res = Vector3.zero;
+        Vector3 closestPoint = Vector3.zero;
+        Vector3 dir = Vector3.zero;
+        foreach (BoxCollider obs in obstacles.GetComponentsInChildren<BoxCollider>())
+        {
+            closestPoint = obs.ClosestPointOnBounds(pos);
+            Debug.Log(closestPoint);
+            dir = pos - closestPoint;
+            res += dir / dir.sqrMagnitude;
+        }
+        return res;
+    }
+
+    private Vector3 potential(Vector3 pos)
+    {
         Vector3 northWallDir = new Vector3(0, 0, myrb.position.z - northWall.z);
         Vector3 southWallDir = new Vector3(0, 0, myrb.position.z - southWall.z);
         Vector3 westWallDir = new Vector3(myrb.position.x - westWall.x, 0, 0);
@@ -43,14 +69,8 @@ public class AIController : MonoBehaviour {
         southWallDir = southWallDir / (southWallDir.sqrMagnitude * southWallDir.magnitude);
         westWallDir = westWallDir / (westWallDir.sqrMagnitude * westWallDir.magnitude);
         eastWallDir = eastWallDir / (eastWallDir.sqrMagnitude * eastWallDir.magnitude);
-        Vector3 desiredVel = (seekVel + fleeVel + northWallDir + southWallDir + westWallDir + eastWallDir).normalized * speed;
-        Vector3 steering = desiredVel - v;
-        //targetDir = targetDir / targetDir.sqrMagnitude;
-        //Vector3 enemyDir = enemy.transform.position - myrb.position;
-        //enemyDir = enemyDir / enemyDir.sqrMagnitude;
-        //Vector3 movement = (targetDir - enemyDir).normalized;
-        myrb.AddForce(myrb.mass * steering / Time.fixedDeltaTime);
-	}
+        return northWallDir + southWallDir + westWallDir + eastWallDir;
+    }
 
     private Vector3 pursuit(Vector3 tgPos, Vector3 tgVel,  Vector3 mypos)
     {
