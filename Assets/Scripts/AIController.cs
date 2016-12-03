@@ -49,12 +49,13 @@ public class AIController : MonoBehaviour {
         Vector3 res = Vector3.zero;
         Vector3 closestPoint = Vector3.zero;
         Vector3 dir = Vector3.zero;
+        int k = 0;
         foreach (BoxCollider obs in obstacles.GetComponentsInChildren<BoxCollider>())
         {
             closestPoint = obs.ClosestPointOnBounds(pos);
-            Debug.Log(closestPoint);
             dir = pos - closestPoint;
             res += dir / dir.sqrMagnitude;
+            k += 1;
         }
         return res;
     }
