@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody rb;
     private int count;
+	Transform obj;
 
     void Start ()
     {
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour {
         count = 0;
         setCountText();
         winText.text = "";
+		obj = GetComponent<Transform>();
     }
 
     void FixedUpdate()
@@ -48,4 +50,23 @@ public class PlayerController : MonoBehaviour {
             winText.text = "You Win!";
         }
     }
+
+	void OnCollisionEnter (Collision col)
+	{
+		float force = 500;
+		if(col.gameObject.name == "Bot Red")
+		{
+			count += 1;
+			Vector3 dir = col.contacts[0].point - transform.position;
+			dir = -dir.normalized;
+			rb.AddForce(dir*force);
+		} else if(col.gameObject.name == "Bot Green")
+		{
+			count -= 1;
+			Vector3 dir = col.contacts[0].point - transform.position;
+			dir = -dir.normalized;
+			rb.AddForce(dir*force);
+		}
+		setCountText ();
+	}
 }

@@ -7,12 +7,13 @@ public class AIController : MonoBehaviour {
     public float coef;
     public GameObject target; //pursue
     public GameObject enemy; //flee
+	Transform obj;
 
     private Rigidbody myrb;
 
 	// Use this for initialization
 	void Start () {
-
+		obj = GetComponent<Transform>();
         myrb = GetComponent<Rigidbody>();
 	
 	}
@@ -29,5 +30,21 @@ public class AIController : MonoBehaviour {
         myrb.AddForce(movement * speed);
 
 	
+	}
+
+	void OnCollisionEnter (Collision col)
+	{
+		float force = 500;
+		if(col.gameObject.name == "Bot Green") {
+			//red collide with green
+			Vector3 dir = col.contacts[0].point - transform.position;
+			dir = -dir.normalized;
+			myrb.AddForce(dir*force);
+		} else if(col.gameObject.name == "Bot Red") {
+			//green collide with red
+			Vector3 dir = col.contacts[0].point - transform.position;
+			dir = -dir.normalized;
+			myrb.AddForce(dir*force);
+		}
 	}
 }
