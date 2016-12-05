@@ -5,19 +5,26 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public float speed;
-    public Text countText;
+    public Text blueCountText;
+	public Text redCountText;
+	public Text greenCountText;
     public Text winText;
 
     private Rigidbody rb;
-    private int count;
+	private static int blueCount;
+	private static int redCount;
+	private static int greenCount;
 	Transform obj;
 
     void Start ()
     {
         rb = GetComponent<Rigidbody>();
-        count = 0;
+        blueCount = 0;
+		redCount = 0;
+		greenCount = 0;
         setCountText();
         winText.text = "";
+		blueCountText.text = "";
 		obj = GetComponent<Transform>();
     }
 
@@ -37,15 +44,17 @@ public class PlayerController : MonoBehaviour {
         if (other.gameObject.CompareTag("Pick Up")) 
         {
             other.gameObject.SetActive(false);
-            count = count + 1;
+            blueCount = blueCount + 1;
             setCountText();
         }
     }
 
-    void setCountText()
+    public void setCountText()
     {
-        countText.text = "Count: " + count.ToString();
-        if (count >= 11)
+        blueCountText.text = "Blue Count: " + blueCount.ToString();
+		redCountText.text = "Red Count: " + redCount.ToString();
+		greenCountText.text = "Green Count: " + greenCount.ToString();
+        if (blueCount >= 11)
         {
             winText.text = "You Win!";
         }
@@ -56,17 +65,53 @@ public class PlayerController : MonoBehaviour {
 		float force = 500;
 		if(col.gameObject.name == "Bot Red")
 		{
-			count += 1;
-			Vector3 dir = col.contacts[0].point - transform.position;
-			dir = -dir.normalized;
-			rb.AddForce(dir*force);
+			blueCount += 1;
+			redCount -= 1;
+			bounceAndUpdateScore (col);
 		} else if(col.gameObject.name == "Bot Green")
 		{
-			count -= 1;
-			Vector3 dir = col.contacts[0].point - transform.position;
-			dir = -dir.normalized;
-			rb.AddForce(dir*force);
+			blueCount -= 1;
+			greenCount += 1;
+			bounceAndUpdateScore (col);
 		}
+	}
+
+	void bounceAndUpdateScore(Collision col)
+	{
+		float force = 500;
+		Vector3 dir = col.contacts[0].point - transform.position;
+		dir = -dir.normalized;
+		rb.AddForce(dir*force);
 		setCountText ();
+	}
+
+	public static void setRedCounts(int r) 
+	{
+		redCount = r;
+	}
+
+	public static void setGreenCounts(int g) 
+	{
+		greenCount = g;
+	}
+
+	public static void setBlueCounts(int b) 
+	{
+		blueCount = b;
+	}
+
+	public static int getRedCounts() 
+	{
+		return redCount;
+	}
+
+	public static int getGreenCounts() 
+	{
+		return greenCount;
+	}
+
+	public static int getBlueCounts() 
+	{
+		return blueCount;
 	}
 }

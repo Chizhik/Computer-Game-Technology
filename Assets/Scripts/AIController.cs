@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class AIController : MonoBehaviour {
@@ -7,6 +8,8 @@ public class AIController : MonoBehaviour {
     public float coef;
     public GameObject target; //pursue
     public GameObject enemy; //flee
+	public Text redCountText;
+	public Text greenCountText;
 	Transform obj;
 
     private Rigidbody myrb;
@@ -34,17 +37,21 @@ public class AIController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		float force = 500;
 		if(col.gameObject.name == "Bot Green") {
 			//red collide with green
-			Vector3 dir = col.contacts[0].point - transform.position;
-			dir = -dir.normalized;
-			myrb.AddForce(dir*force);
-		} else if(col.gameObject.name == "Bot Red") {
-			//green collide with red
+
+			int redCount = PlayerController.getRedCounts() + 1;
+			int greenCount = PlayerController.getGreenCounts () - 1;
+			PlayerController.setRedCounts(redCount);
+			PlayerController.setRedCounts(greenCount);
+			redCountText.text = "Red Count: " + redCount.ToString();
+			greenCountText.text = "Green Count: " + greenCount.ToString();
+
+			float force = 500;
 			Vector3 dir = col.contacts[0].point - transform.position;
 			dir = -dir.normalized;
 			myrb.AddForce(dir*force);
 		}
+
 	}
 }
