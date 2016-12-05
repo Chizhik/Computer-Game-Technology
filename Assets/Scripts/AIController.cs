@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.IO;
 
 public class AIController : MonoBehaviour {
 
@@ -11,11 +13,8 @@ public class AIController : MonoBehaviour {
     private Rigidbody myrb;
     private Rigidbody tgRigid;
     private Rigidbody enRigid;
-    private Vector3 northWall;
-    private Vector3 southWall;
-    private Vector3 westWall;
-    private Vector3 eastWall;
-    private Vector3 BigCube;
+    private Vector3[,] potentialBoard;
+    private int gridSize = 400;
 
 	// Use this for initialization
 	void Start () {
@@ -23,10 +22,11 @@ public class AIController : MonoBehaviour {
         myrb = GetComponent<Rigidbody>();
         tgRigid = target.GetComponent<Rigidbody>();
         enRigid = enemy.GetComponent<Rigidbody>();
-        northWall = new Vector3(0, 0, 10);
-        southWall = new Vector3(0, 0, -10);
-        westWall = new Vector3(-10, 0, 0);
-        eastWall = new Vector3(10, 0, 0);
+
+        potentialBoard = new Vector3[gridSize+1, gridSize+1];
+        computePotentialForBoard(ref potentialBoard);
+
+        //printPotentialBoard();
 	
 	}
 	
@@ -37,11 +37,14 @@ public class AIController : MonoBehaviour {
         Vector3 seekVel = pursuit(tgRigid.position, tgRigid.velocity, myrb.position);
         Vector3 fleeVel = evade(enRigid.position, enRigid.velocity, myrb.position);
 
-        Vector3 potDir = newPotential(myrb.position);
+        //Vector3 potDir = newPotential(myrb.position); //compute dynamically
+        Vector3 potDir = potentialFromBoard(myrb.position);
 
-        Vector3 desiredVel = (seekVel + fleeVel + potDir).normalized * speed;
+        Vector3 desiredVel = (seekVel + fleeVel + 0.09f * potDir).normalized * speed;
         Vector3 steering = desiredVel - v;
-        myrb.AddForce(myrb.mass * steering / Time.fixedDeltaTime);
+        Vector3 final = myrb.mass * steering / Time.fixedDeltaTime;
+        //final.y = 0f;
+        myrb.AddForce(final);
 	}
 
     private Vector3 newPotential(Vector3 pos)
@@ -49,28 +52,31 @@ public class AIController : MonoBehaviour {
         Vector3 res = Vector3.zero;
         Vector3 closestPoint = Vector3.zero;
         Vector3 dir = Vector3.zero;
-        int k = 0;
         foreach (BoxCollider obs in obstacles.GetComponentsInChildren<BoxCollider>())
         {
             closestPoint = obs.ClosestPointOnBounds(pos);
             dir = pos - closestPoint;
             res += dir / dir.sqrMagnitude;
-            k += 1;
         }
         return res;
     }
 
-    private Vector3 potential(Vector3 pos)
+    private void computePotentialForBoard(ref Vector3[,] board)
     {
-        Vector3 northWallDir = new Vector3(0, 0, myrb.position.z - northWall.z);
-        Vector3 southWallDir = new Vector3(0, 0, myrb.position.z - southWall.z);
-        Vector3 westWallDir = new Vector3(myrb.position.x - westWall.x, 0, 0);
-        Vector3 eastWallDir = new Vector3(myrb.position.x - eastWall.x, 0, 0);
-        northWallDir = northWallDir / (northWallDir.sqrMagnitude * northWallDir.magnitude);
-        southWallDir = southWallDir / (southWallDir.sqrMagnitude * southWallDir.magnitude);
-        westWallDir = westWallDir / (westWallDir.sqrMagnitude * westWallDir.magnitude);
-        eastWallDir = eastWallDir / (eastWallDir.sqrMagnitude * eastWallDir.magnitude);
-        return northWallDir + southWallDir + westWallDir + eastWallDir;
+        for (int x = 0; x <= gridSize; ++x)
+        {
+            for (int z = 0; z <= gridSize; ++z)
+            {
+                board[x, z] = newPotential(new Vector3((x - gridSize / 2) * 20f / gridSize, 0.5f, (z - gridSize / 2) * 20f / gridSize)); // if point is inside of obstacle??
+            }
+        }
+    }
+
+    private Vector3 potentialFromBoard(Vector3 position)
+    {
+        int x = Convert.ToInt32(position.x * gridSize / 20f) + gridSize / 2;
+        int z = Convert.ToInt32(position.z * gridSize / 20f) + gridSize / 2;
+        return potentialBoard[x,z];
     }
 
     private Vector3 pursuit(Vector3 tgPos, Vector3 tgVel,  Vector3 mypos)
@@ -95,6 +101,24 @@ public class AIController : MonoBehaviour {
         //Vector3 fleeVel = mypos - enPos;
         fleeVel = fleeVel / fleeVel.sqrMagnitude;
         return fleeVel;
+    }
+
+    private void printPotentialBoard()
+    {
+        using (var sw = new StreamWriter("output.txt"))
+        {
+            for (int x = 0; x <= 400; ++x)
+            {
+                for (int z = 0; z <= 400; ++z)
+                {
+                    sw.Write(Convert.ToString(potentialBoard[x, z]) + " ");
+                }
+                sw.Write("\n");
+            }
+
+            sw.Flush();
+            sw.Close();
+        }
     }
 
 }
