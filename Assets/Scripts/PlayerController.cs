@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour {
 		greenCount = 0;
         setCountText();
         winText.text = "";
-		blueCountText.text = "";
 		obj = GetComponent<Transform>();
     }
 
@@ -35,7 +34,7 @@ public class PlayerController : MonoBehaviour {
 
         Vector3 movement = new Vector3 (moveHorizontal, 0, moveVertical);
 
-        rb.AddForce(movement * speed);
+        rb.AddForce(movement.normalized * speed);
         
     }
 
