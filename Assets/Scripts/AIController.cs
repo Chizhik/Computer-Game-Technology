@@ -12,7 +12,6 @@ public class AIController : MonoBehaviour {
 
 	public Text redCountText;
 	public Text greenCountText;
-	Transform obj;
 
     public GameObject obstacles;
 
@@ -24,7 +23,6 @@ public class AIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		obj = GetComponent<Transform>();
         myrb = GetComponent<Rigidbody>();
         tgRigid = target.GetComponent<Rigidbody>();
         enRigid = enemy.GetComponent<Rigidbody>();
