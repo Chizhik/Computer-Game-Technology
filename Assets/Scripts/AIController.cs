@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 using System.IO;
@@ -8,6 +9,11 @@ public class AIController : MonoBehaviour {
     public float speed;
     public GameObject target; //pursue
     public GameObject enemy; //flee
+
+	public Text redCountText;
+	public Text greenCountText;
+	Transform obj;
+
     public GameObject obstacles;
 
     private Rigidbody myrb;
@@ -18,7 +24,7 @@ public class AIController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
+		obj = GetComponent<Transform>();
         myrb = GetComponent<Rigidbody>();
         tgRigid = target.GetComponent<Rigidbody>();
         enRigid = enemy.GetComponent<Rigidbody>();
@@ -45,6 +51,26 @@ public class AIController : MonoBehaviour {
         Vector3 final = myrb.mass * steering / Time.fixedDeltaTime;
         //final.y = 0f;
         myrb.AddForce(final);
+	}
+
+	void OnCollisionEnter (Collision col)
+	{
+		if(col.gameObject.name == "Bot Green") {
+			//red collide with green
+
+			int redCount = PlayerController.getRedCounts() + 1;
+			int greenCount = PlayerController.getGreenCounts () - 1;
+			PlayerController.setRedCounts(redCount);
+			PlayerController.setRedCounts(greenCount);
+			redCountText.text = "Red Count: " + redCount.ToString();
+			greenCountText.text = "Green Count: " + greenCount.ToString();
+
+			float force = 500;
+			Vector3 dir = col.contacts[0].point - transform.position;
+			dir = -dir.normalized;
+			myrb.AddForce(dir*force);
+		}
+
 	}
 
     private Vector3 newPotential(Vector3 pos)
@@ -120,5 +146,4 @@ public class AIController : MonoBehaviour {
             sw.Close();
         }
     }
-
 }
