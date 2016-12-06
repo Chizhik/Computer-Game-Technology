@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour {
 	private static int blueCount;
 	private static int redCount;
 	private static int greenCount;
-	Transform obj;
 
     void Start ()
     {
@@ -24,7 +23,6 @@ public class PlayerController : MonoBehaviour {
 		greenCount = 0;
         setCountText();
         winText.text = "";
-		obj = GetComponent<Transform>();
     }
 
     void FixedUpdate()
@@ -61,7 +59,6 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		float force = 500;
 		if(col.gameObject.name == "Bot Red")
 		{
 			blueCount += 1;
