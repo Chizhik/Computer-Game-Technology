@@ -47,7 +47,7 @@ public class AIController : MonoBehaviour {
         Vector3 desiredVel = (seekVel + fleeVel + 0.09f * potDir).normalized * speed;
         Vector3 steering = desiredVel - v;
         Vector3 final = myrb.mass * steering / Time.fixedDeltaTime;
-        //final.y = 0f;
+        final.y = 0f;
         myrb.AddForce(final);
 	}
 
