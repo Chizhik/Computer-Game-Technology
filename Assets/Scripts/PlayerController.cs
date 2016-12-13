@@ -57,8 +57,9 @@ public class PlayerController : MonoBehaviour {
         {
             float force = 500;
             Vector3 dir = transform.position - col.transform.position;
-            dir = dir.normalized;
-            rb.AddForce(dir * force);
+            dir = dir.normalized * force;
+            dir.y = 0f;
+            rb.AddForce(dir);
             setWinText();
         }
         

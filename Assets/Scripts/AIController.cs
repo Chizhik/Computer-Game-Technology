@@ -43,8 +43,12 @@ public class AIController : MonoBehaviour {
 
         //Vector3 potDir = newPotential(myrb.position); //compute dynamically
         Vector3 potDir = potentialFromBoard(myrb.position);
-
-        Vector3 desiredVel = (seekVel + fleeVel + 0.09f * potDir).normalized * speed;
+        float coeff = 0.1f;
+        if ((seekVel + fleeVel).magnitude < coeff * potDir.magnitude)
+        {
+            coeff = coeff / 2;
+        }
+        Vector3 desiredVel = (seekVel + fleeVel + coeff * potDir).normalized * speed;
         Vector3 steering = desiredVel - v;
         Vector3 final = myrb.mass * steering / Time.fixedDeltaTime;
         final.y = 0f;
@@ -73,10 +77,11 @@ public class AIController : MonoBehaviour {
 		}
         if (col.gameObject.name == "Bot Green" || col.gameObject.name == "Bot Red")
         {
-            float force = 500;
+            float force = 2000;
             Vector3 dir = transform.position - col.transform.position;
-            dir = dir.normalized;
-            myrb.AddForce(dir * force);
+            dir = dir.normalized * force;
+            dir.y = 0f;
+            myrb.AddForce(dir);
         }
 	}
 
