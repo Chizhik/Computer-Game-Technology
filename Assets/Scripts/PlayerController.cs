@@ -21,7 +21,9 @@ public class PlayerController : MonoBehaviour {
         blueCount = 0;
 		redCount = 0;
 		greenCount = 0;
-        setCountText();
+        blueCountText.text = "Blue Count: " + blueCount.ToString();
+        greenCountText.text = "Green Count: " + greenCount.ToString();
+        redCountText.text = "Red Count: " + redCount.ToString();
         winText.text = "";
     }
 
@@ -36,21 +38,8 @@ public class PlayerController : MonoBehaviour {
         
     }
 
-    void OnTriggerEnter(Collider other)
+    public void setWinText()
     {
-        if (other.gameObject.CompareTag("Pick Up")) 
-        {
-            other.gameObject.SetActive(false);
-            blueCount = blueCount + 1;
-            setCountText();
-        }
-    }
-
-    public void setCountText()
-    {
-        blueCountText.text = "Blue Count: " + blueCount.ToString();
-		redCountText.text = "Red Count: " + redCount.ToString();
-		greenCountText.text = "Green Count: " + greenCount.ToString();
         if (blueCount >= 11)
         {
             winText.text = "You Win!";
@@ -59,26 +48,20 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		if(col.gameObject.name == "Bot Red")
-		{
-			blueCount += 1;
-			redCount -= 1;
-			bounceAndUpdateScore (col);
-		} else if(col.gameObject.name == "Bot Green")
-		{
-			blueCount -= 1;
-			greenCount += 1;
-			bounceAndUpdateScore (col);
-		}
-	}
-
-	void bounceAndUpdateScore(Collision col)
-	{
-		float force = 500;
-		Vector3 dir = col.contacts[0].point - transform.position;
-		dir = -dir.normalized;
-		rb.AddForce(dir*force);
-		setCountText ();
+        if (col.gameObject.name == "Bot Red")
+        {
+            blueCount += 1;
+            blueCountText.text = "Blue Count: " + blueCount.ToString();
+        }
+        if (col.gameObject.name == "Bot Red" || col.gameObject.name == "Bot Green")
+        {
+            float force = 500;
+            Vector3 dir = transform.position - col.transform.position;
+            dir = dir.normalized;
+            rb.AddForce(dir * force);
+            setWinText();
+        }
+        
 	}
 
 	public static void setRedCounts(int r) 

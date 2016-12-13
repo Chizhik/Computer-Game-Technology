@@ -53,22 +53,31 @@ public class AIController : MonoBehaviour {
 
 	void OnCollisionEnter (Collision col)
 	{
-		if(col.gameObject.name == "Bot Green") {
-			//red collide with green
-
-			int redCount = PlayerController.getRedCounts() + 1;
-			int greenCount = PlayerController.getGreenCounts () - 1;
-			PlayerController.setRedCounts(redCount);
-			PlayerController.setRedCounts(greenCount);
-			redCountText.text = "Red Count: " + redCount.ToString();
-			greenCountText.text = "Green Count: " + greenCount.ToString();
-
-			float force = 500;
-			Vector3 dir = col.contacts[0].point - transform.position;
-			dir = -dir.normalized;
-			myrb.AddForce(dir*force);
+        if (myrb.gameObject.name == "Bot Green")
+        {
+            if (col.gameObject.name == "Player")
+            {
+                int greenCount = PlayerController.getGreenCounts() + 1;
+                PlayerController.setGreenCounts(greenCount);
+                greenCountText.text = "Green Count: " + greenCount.ToString();             
+            }
+        }
+		else if (myrb.gameObject.name == "Bot Red") 
+        {
+            if (col.gameObject.name == "Bot Green")
+            {
+                int redCount = PlayerController.getRedCounts() + 1;
+                PlayerController.setRedCounts(redCount);
+                redCountText.text = "Red Count: " + redCount.ToString();
+            }
 		}
-
+        if (col.gameObject.name == "Bot Green" || col.gameObject.name == "Bot Red")
+        {
+            float force = 500;
+            Vector3 dir = transform.position - col.transform.position;
+            dir = dir.normalized;
+            myrb.AddForce(dir * force);
+        }
 	}
 
     private Vector3 newPotential(Vector3 pos)
